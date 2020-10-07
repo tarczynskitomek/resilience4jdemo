@@ -1,4 +1,4 @@
-package it.tarczynski.resilience4jdemo.foo.service
+package it.tarczynski.resilience4jdemo.foo.client
 
 import io.github.resilience4j.bulkhead.annotation.Bulkhead
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
@@ -8,9 +8,9 @@ import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.stereotype.Service
 
 @Service
-class FooServiceClient(restTemplateBuilder: RestTemplateBuilder) {
+class DeclarativeFooServiceClient(restTemplateBuilder: RestTemplateBuilder) {
 
-    private val logger = loggerFor<FooServiceClient>()
+    private val logger = loggerFor<DeclarativeFooServiceClient>()
 
     private val restTemplate = restTemplateBuilder
             .rootUri("http://localhost:8081/api/v1/foos")
@@ -24,7 +24,7 @@ class FooServiceClient(restTemplateBuilder: RestTemplateBuilder) {
     @Retry(name = "FOO")
     @Bulkhead(name = "FOO")
     @CircuitBreaker(name = "FOO")
-    fun slowFoo(): String = executeRequest("/slow")
+    fun slow(): String = executeRequest("/slow")
 
     @Retry(name = "FOO")
     @Bulkhead(name = "FOO")
@@ -34,7 +34,7 @@ class FooServiceClient(restTemplateBuilder: RestTemplateBuilder) {
     @Retry(name = "FOO")
     @Bulkhead(name = "FOO")
     @CircuitBreaker(name = "FOO")
-    fun random(): String = executeRequest("/flaky")
+    fun flaky(): String = executeRequest("/flaky")
 
     private fun executeRequest(uri: String): String {
         logger.warn("Trying... $uri")

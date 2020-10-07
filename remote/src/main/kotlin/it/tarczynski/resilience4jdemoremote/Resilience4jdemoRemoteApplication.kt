@@ -40,7 +40,7 @@ class FooEndpoint {
     @GetMapping("flaky")
     fun random(): String {
         val dice = ThreadLocalRandom.current().nextInt(0, 10)
-        return if (dice == 9) throw IOException("Oh, bad luck")
+        return if (dice == 8) throw IOException("Oh, bad luck")
         else "Fine, this time you were lucky"
     }
 

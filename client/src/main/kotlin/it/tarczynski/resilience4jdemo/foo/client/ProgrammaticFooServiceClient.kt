@@ -34,23 +34,22 @@ class ProgrammaticFooServiceClient(restTemplateBuilder: RestTemplateBuilder) {
     fun error(): String {
 
         val decorated = Decorators.ofSupplier { executeRequest("/error") }
-                .withCircuitBreaker(circuitBreaker)
-                .withRetry(retry)
                 .withBulkhead(bulkhead)
+                .withRetry(retry)
+                .withCircuitBreaker(circuitBreaker)
                 .decorate()
 
         return Try.ofSupplier(decorated).recover { "Recovered, It's fine" }.get()
     }
 
+    // no retries here!
     fun flaky(): String {
-
-        // no retries here!
-        val decorated = Decorators.ofSupplier { executeRequest("/flaky") }
-                .withCircuitBreaker(circuitBreaker)
+        return Decorators.ofSupplier { executeRequest("/flaky") }
                 .withBulkhead(bulkhead)
+                .withCircuitBreaker(circuitBreaker)
+                .withFallback { _ -> "It's flaky, but I've recovered!" }
                 .decorate()
-
-        return Try.ofSupplier(decorated).recover { "It's flaky, but I've recovered!" }.get()
+                .get()
     }
 
     private fun executeRequest(uri: String): String {

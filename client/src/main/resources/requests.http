@@ -9,3 +9,17 @@ GET http://localhost:8080/api/v1/foos/flaky
 
 ### SLOW
 GET http://localhost:8080/api/v1/foos/slow
+
+### Programmatic
+
+### OK
+GET http://localhost:8080/api/v1/foos/programmatic/ok
+
+### ERROR
+GET http://localhost:8080/api/v1/foos/programmatic/error
+
+### FLAKY
+GET http://localhost:8080/api/v1/foos/programmatic/flaky
+
+### SLOW
+GET http://localhost:8080/api/v1/foos/programmatic/slow

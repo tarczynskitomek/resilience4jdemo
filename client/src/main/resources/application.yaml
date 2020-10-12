@@ -44,6 +44,12 @@ resilience4j.retry:
     FOO:
       baseConfig: default
 
+resilience4j.timelimiter:
+  instances:
+    FOO:
+      timeoutDuration: 1s
+      cancelRunningFeature: true
+
 logging:
   level:
     it.tarczynski.resilience4jdemo: info

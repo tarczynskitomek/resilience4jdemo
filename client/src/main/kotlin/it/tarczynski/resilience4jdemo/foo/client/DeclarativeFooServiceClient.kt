@@ -3,6 +3,7 @@ package it.tarczynski.resilience4jdemo.foo.client
 import io.github.resilience4j.bulkhead.annotation.Bulkhead
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import io.github.resilience4j.retry.annotation.Retry
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter
 import it.tarczynski.resilience4jdemo.foo.logging.loggerFor
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.stereotype.Service
@@ -24,11 +25,12 @@ class DeclarativeFooServiceClient(restTemplateBuilder: RestTemplateBuilder) {
     @Retry(name = "FOO")
     @Bulkhead(name = "FOO")
     @CircuitBreaker(name = "FOO")
+    @TimeLimiter(name = "FOO", fallbackMethod = "slowFallback")
     fun slow(): String = executeRequest("/slow")
 
     @Retry(name = "FOO")
     @Bulkhead(name = "FOO")
-    @CircuitBreaker(name = "FOO")
+    @CircuitBreaker(name = "FOO", fallbackMethod = "errorFallback")
     fun error(): String = executeRequest("/error")
 
     @Retry(name = "FOO")
@@ -42,4 +44,7 @@ class DeclarativeFooServiceClient(restTemplateBuilder: RestTemplateBuilder) {
                 ?: throw RuntimeException("Failed to get response body")
     }
 
+    fun slowFallback(ignored: Exception) = "Gramma was slow, but she was old"
+
+    fun errorFallback(ignored: Exception) = "Recovered, it's fine"
 }
